@@ -1,11 +1,10 @@
 <?php
-include("/var/www/html/preschool/includes/DB.inc.php");
+include("./DB.inc.php");
 DEFINE("isDebugMode",true);
 DEFINE("cooldown", 3600);
 # arduino needs to send a hash tha will be identified by the webserver if its the arduino asking for an HTTP request
 
 class SMS {
-  echo "test";
   public function init(){
     $source = $_SERVER["REMOTE_ADDR"];
     $idnumber = $_GET["idnumber"];
@@ -40,7 +39,7 @@ class SMS {
     echo (isDebugMode ? "<br>[+] Logging Student ID: ".$idnumber : "</br>" );
     $currenttime_stamp = date("Y-m-d H:i:s");
     $message = $studentname. " has passed the gate at ".date("F-d-Y h:i:sa", strtotime($currenttime_stamp));
-    $db = new DB("192.168.8.222","kiosk","kiosk","preschool_gatekeeper");
+    $db = new db();
     if($db) {
 
         if($db->query('INSERT INTO gatekeeper_in ( idnumber, message, time_recorded, direction, isSent ) VALUES (?, ?, ?, ?, ?)', $idnumber ,$message, $currenttime_stamp, $dir, 0)){
@@ -49,7 +48,7 @@ class SMS {
           echo "[+] ".$message;
 
         // LOG
-        $msg = $name. " has passed the gate at ".date("h:i:sa");
+        $msg = $studentname. " has passed the gate at ".date("h:i:sa");
 
           //echo $msg."<br>";
           if($this->isMobileNumber($this->cleanNumber($contact1))){
@@ -58,7 +57,7 @@ class SMS {
             echo (isDebugMode ? "<br>[-] Not a mobile number" : "" );
           }
 
-          if($this->isMobileNumber($this->cleanNumber($row["contact2"]))){
+          if($this->isMobileNumber($this->cleanNumber($contact2))){
             $number = $this->cleanNumber($row["contact2"]);
           }else{
             echo (isDebugMode ? "<br>[-] Not a mobile number" : "" );
@@ -71,7 +70,7 @@ class SMS {
 
 
 private function checkIfStudentExists($idnumber){
-    $db = new DB("192.168.8.222","kiosk","kiosk","preschool_gatekeeper");
+    $db = new db();
     $studentRecord = $db->query("SELECT * from preschool WHERE idnumber = ".$idnumber."")->fetchArray();
     if($studentRecord){
       return $studentRecord;
@@ -83,7 +82,7 @@ private function checkIfStudentExists($idnumber){
   }
 
   private function studentHasEntryToday($idnumber, $m, $d, $y, $dir){
-      $db = new DB("192.168.8.222","kiosk","kiosk","preschool_gatekeeper");
+      $db = new db();
       if($db){
         $q = "SELECT * from gatekeeper_in WHERE idnumber = ".$idnumber." && MONTH(time_recorded) = ".$m." && DAY(time_recorded) = ".$d." && YEAR(time_recorded) = ".$y." && direction = '".$dir."' ORDER BY id DESC LIMIT 1";
         if($studentRecord = $db->query($q)->fetchAll()){
@@ -176,6 +175,10 @@ private function checkIfStudentExists($idnumber){
     if($dir == "192.168.8.222"){
       # Josh PC
       return "none";
+    }
+
+    if($dir == "::1"){
+      return "in";
     }
   }
 }
