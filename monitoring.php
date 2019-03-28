@@ -1,20 +1,26 @@
 <?php
-  include "../../includes/DB.inc.php";
+  include "./DB.inc.php";
 
   class Student{
 
-    // $db = new DB("192.168.8.222","kiosk","kiosk","preschool_gatekeeper");
-    public $record = Array();
-
-    function __construct(){
-
-    }
+    // public $record = Array();
+    public $idnumber = Array(
+      "2900876" => Array(
+        "name" => "Alec Joshua Slaton",
+        "course" => "BA Accountancy",
+        "year" => "1",
+        "time_records" => Array(
+          "time_in" => "2019-03-27 08:00:00",
+          "time_out" => "2019-03-27 17:00:00"
+          )
+        )
+    );
 
     function init(){
       $db = new db();
-      if($results = $db->query("SELECT idnumber FROM preschool WHERE idnumber = 2900876")->fetchAll()){
+      if($results = $db->query("SELECT idnumber, time_recorded, direction FROM gatekeeper_in WHERE idnumber = 1700389")->fetchAll()){
         foreach($results as $result){
-          array_push($this->record, $result);
+          // array_push($this->record, $result["idnumber"]);
         }
       }
 
@@ -24,8 +30,6 @@
 
   $student = new Student();
   $student->init();
-  var_dump($this->record);
-
 ?>
 <html>
 <head>
@@ -41,21 +45,26 @@
     </tr>
     <!-- TABLE SECOND ROW -->
     <!-- PHP CODE HERE -->
-    <tr>
-      <?php
-      echo "<td>STUDENT NAME</td>";
-      ?>
-      <td>
-        <table>
-          <thead>
-            <tr>
-              <td>In</td>
-              <td>Out</td>
-            </tr>
-          </thead>
-        </table>
-      </td>
-    </tr>
+    <?php
+    foreach($student->idnumber as $id=>$info){
+    echo "<tr>";
+      echo "<td>".$id."</td>";
+      echo "<td>";
+        echo "<table>";
+          echo "<thead>";
+          foreach($info as $entry){
+            var_dump($entry);
+            echo "<tr>";
+              echo "<td>".$info["time_records"]["time_in"]."</td>";
+              echo "<td>".$info["time_records"]["time_out"]."</td>";
+            echo "</tr>";
+          }
+          echo "</thead>";
+        echo "</table>";
+      echo "</td>";
+    echo "</tr>";
+    }
+    ?>
 
 
 
