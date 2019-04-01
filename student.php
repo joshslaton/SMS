@@ -1,11 +1,6 @@
 <?php
   include "./DB.inc.php";
 
-  global $db;
-  class Attendance {
-    // student, time in, time out
-  }
-
   class Student {
 
     function __construct(){
@@ -39,13 +34,14 @@
       }
     }
 
-    function studentHasRecordToday($idnumber){
-      $today = date("Y-m-d", time());
+    // Add day to parameters, add date later on
+    function isStudentPresent($idnumber, $day){
+      $today = date("Y-m-d", strtotime("2019-03-".$day));
       // Check in the array of student
-      echo "<pre>";
+      // echo "<pre>";
       foreach($this->studentArray[$idnumber] as $k=>$v){
         if($k == "time_in"){
-          foreach($v as $timeEntry){
+          foreach($v as $timeEntry){ // Check each time entry
             if(date("Y-m-d", strtotime($timeEntry)) == $today){
               return True;
             }
@@ -53,7 +49,7 @@
         }
         // print_r($this->studentArray[$idnumber]["time_in"]);
       }
-      echo "</pre>";
+      // echo "</pre>";
     }
 
     function debug(){
@@ -64,10 +60,6 @@
 }
 
 $student = new Student();
-
 $student -> init();
 // $student -> debug();
-foreach($student->studentArray as $id=>$info){
-  print($id." - ".$student->studentHasRecordToday($id));
-}
 ?>
