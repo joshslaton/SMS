@@ -1,11 +1,12 @@
 <?php
   include "./DB.inc.php";
 
+  global $db;
   class Attendance {
-
+    // student, time in, time out
   }
 
-  class Student extends Attendance{
+  class Student {
 
     function __construct(){
       $this->studentArray = Array();
@@ -17,12 +18,11 @@
       $results = $db->query("SELECT idnumber FROM preschool WHERE idnumber")->fetchAll();
       foreach($results as $result){
         $id = $result["idnumber"];
-        print("Student ID: ");
-        print($id);
+        // print("Student ID: ");
+        // print($id);
         $this->studentArray[$id]["time_in"] = Array();
         $this->studentArray[$id]["time_out"] = Array();
         $this->insertTimeRecord($id);
-        $this->printRecord($id);
       }
     }
 
@@ -39,25 +39,35 @@
       }
     }
 
-    function printRecord($idnumber){
-      foreach($this->studentArray[$idnumber]["time_in"] as $k=>$v){
-        print("<br>");
-        print($v);
+    function studentHasRecordToday($idnumber){
+      $today = date("Y-m-d", time());
+      // Check in the array of student
+      echo "<pre>";
+      foreach($this->studentArray[$idnumber] as $k=>$v){
+        if($k == "time_in"){
+          foreach($v as $timeEntry){
+            if(date("Y-m-d", strtotime($timeEntry)) == $today){
+              return True;
+            }
+          }
+        }
+        // print_r($this->studentArray[$idnumber]["time_in"]);
       }
+      echo "</pre>";
+    }
 
-      foreach($this->studentArray[$idnumber]["time_out"] as $k=>$v){
-        print("<br>");
-        print($v);
-      }
-
-      print("<br>");
-      print("-------------------");
-      print("<br><br><br>");
-
+    function debug(){
+      echo '<pre>';
+      print_r($this->studentArray);
+      echo '</pre>';
     }
 }
 
 $student = new Student();
 
 $student -> init();
+// $student -> debug();
+foreach($student->studentArray as $id=>$info){
+  print($id." - ".$student->studentHasRecordToday($id));
+}
 ?>
