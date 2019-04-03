@@ -33,16 +33,13 @@ $student -> init();
         <?php
         // TODO: Remove student array
         $db = new db();
-        if($results = $db->query("SELECT idnumber FROM preschool WHERE idnumber=1600279")->fetchAll()){
+        if($results = $db->query("SELECT idnumber FROM preschool")->fetchAll()){
           foreach($results as $result){
             echo "<tr>";
             echo "<td>".$result["idnumber"]."</td>";
-              // Function being called in a loop many times causing slowdown.
-            for($i=1; $i<=31;$i++){
-              $status = $student->studentHasRecord($result["idnumber"], "2019-3-".$i);
-              print $status;
-
-
+            // Check each day of month if student has time record in it
+            for($i=1; $i<=31; $i++){
+              print($student->studentHasRecord($result["idnumber"],"2019-3-".$i));
             }
           }
         }
