@@ -15,13 +15,28 @@
         $id = $result["idnumber"];
         // print("Student ID: ");
         // print($id);
+        $this->studentInfoToArray($id);
         $this->studentArray[$id]["time_in"] = Array();
         $this->studentArray[$id]["time_out"] = Array();
-        $this->insertTimeRecord($id);
+        $this->studentTimeRecordToArray($id);
+
       }
     }
 
-    function insertTimeRecord($idnumber){
+    function studentInfoToArray($idnumber){
+      $db = new db();
+      if($results = $db->query("SELECT * FROM preschool WHERE idnumber = ".$idnumber)->fetchAll()){
+        foreach($results as $result){
+          $this->studentArray[$idnumber]["name"] = $result["name"];
+          $this->studentArray[$idnumber]["grade"] = $result["grade"];
+          $this->studentArray[$idnumber]["course"] = $result["course"];
+          $this->studentArray[$idnumber]["section"] = $result["section"];
+          $this->studentArray[$idnumber]["year"] = $result["year"];
+        }
+      }
+    }
+
+    function studentTimeRecordToArray($idnumber){
       $db = new db();
       $results = $db->query("SELECT direction, time_recorded FROM gatekeeper_in WHERE idnumber=".$idnumber)->fetchAll();
       foreach($results as $result){
@@ -36,7 +51,7 @@
 
     // Add day to parameters, add date later on
     function isStudentPresent($idnumber, $day){
-      $today = date("Y-m-d", strtotime("2019-03-".$day));
+      $today = date("Y-m-d", strtotime("2019-04-".$day));
       // Check in the array of student
       // echo "<pre>";
       foreach($this->studentArray[$idnumber] as $k=>$v){
@@ -52,6 +67,40 @@
       // echo "</pre>";
     }
 
+    function studentHasInRecord($idnumber, $day){
+      // 2 = in & out, // 1 = in // 0 = none of the above
+      // $today = date("Y-m-d", strtotime("2019-04-".$day));
+      // echo "<pre>";
+      foreach($this->studentArray[$idnumber] as $direction=>$time){
+        $today = date("Y-m-d", strtotime("2019-04-".$day));
+        // If student has time in based on the date given
+        if($direction == "time_in"){
+          foreach($time as $timeEntry=>$v){
+            if(date("Y-m-d", strtotime($v)) == $today){
+              // return 1;
+              return $this->studentHasOutRecord($idnumber, $day);
+            }
+          }
+        }
+      }
+      // echo "</pre>";
+    }
+
+    function studentHasOutRecord($idnumber, $day){
+      foreach($this->studentArray[$idnumber] as $direction=>$time){
+        $today = date("Y-m-d", strtotime("2019-04-".$day));
+        if($direction == "time_out"){
+          foreach($time as $timeEntry=>$v){
+            if(date("Y-m-d", strtotime($v)) == $today){
+              return 2;
+            }else{
+              return 1;
+            }
+          }
+        }
+      }
+    }
+
     function debug(){
       echo '<pre>';
       print_r($this->studentArray);
@@ -61,5 +110,5 @@
 
 $student = new Student();
 $student -> init();
-// $student -> debug();
+$student -> debug();
 ?>
