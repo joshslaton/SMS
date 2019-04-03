@@ -86,6 +86,45 @@
       // echo "</pre>";
     }
 
+    function studentHasRecord($idnumber, $day){
+
+        $db = new db();
+        $q = "SELECT CONCAT(year(time_recorded),'-',month(time_recorded),'-',dayofmonth(time_recorded)) as DDATE, ";
+        $q .= " SUM(if(direction='in',1,0)) as DIN,";
+        $q .= " SUM(if(direction='in',0,1)) as DOUT,";
+        $q .= " idnumber";
+        $q .= " FROM gatekeeper_in";
+        $q .= " WHERE idnumber=".$idnumber;
+        $q .= " AND month(time_recorded)=Month('".$day."')";
+        $q .= " AND day(time_recorded)=day('".$day."')";
+        $q .= " AND year(time_recorded)=year('".$day."')";
+        $q .= " GROUP by DDATE, idnumber";
+        $q .= " ORDER  BY DDATE ASC";
+        $results = $db->query($q)->fetchAll();
+        foreach($results as $result){
+          if($result["DDATE"] == $day){
+            return True;
+          }else{
+            echo "False";
+            return False;
+          }
+        }
+        // return $results;
+        // print("<pre>");
+        // foreach($results as $result){
+        //   foreach($result as $k=>$v){
+        //     print_r($k);
+        //     print_r(" - ");
+        //     print_r($v);
+        //     print("<br>");
+        //   }
+        //   print("<br><br>");
+        // }
+        // print("</pre>");
+        //
+        // exit(0);
+    }
+
     function studentHasOutRecord($idnumber, $day){
       foreach($this->studentArray[$idnumber] as $direction=>$time){
         $today = date("Y-m-d", strtotime("2019-04-".$day));
@@ -110,5 +149,5 @@
 
 $student = new Student();
 $student -> init();
-$student -> debug();
+// $student -> debug();
 ?>

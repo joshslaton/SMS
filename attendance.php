@@ -3,7 +3,8 @@ include "./student.php";
 
 $student = new Student();
 $student -> init();
-// print_r($student-> studentHasInRecord("2900876", "01"));
+// exit(0);
+// print_r($student-> studentHasInRecord("2900876", "2019-4-1"));
 ?>
 <html>
 
@@ -15,7 +16,7 @@ $student -> init();
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" type="text/text/javascript"></script>
 </head>
 <body>
-  <label>Date: </label><input type="text"/><button class="btn btn-primary">Go</button>
+  <!-- <label>Date: </label><input type="text"/><button class="btn btn-primary">Go</button> -->
   <table class="table">
       <tr>
         <td>Month Label</td>
@@ -30,28 +31,20 @@ $student -> init();
         <td>Student</td>
       </tr> -->
         <?php
-        foreach($student->studentArray as $studentID=>$info){
-          $data_grade = $info["grade"];
-          echo "<tr>";
-          echo "<td>".$studentID."</td>";
-          for($i = 1; $i <= 31; $i++){
-              if($student->studentHasInRecord($studentID, $i) == 2){
-                echo "<td class='green'>";
-                echo $i;
-                echo "</td>";
-              }
-              if ($student->studentHasInRecord($studentID, $i) == 1) {
-                echo "<td class='yellow'>";
-                echo $i;
-                echo "</td>";
-              }
-              if ($student->studentHasInRecord($studentID, $i) == 0) {
-                echo "<td class='red'>";
-                echo $i;
-                echo "</td>";
-              }
+        // TODO: Remove student array
+        $db = new db();
+        if($results = $db->query("SELECT idnumber FROM preschool WHERE idnumber=1600279")->fetchAll()){
+          foreach($results as $result){
+            echo "<tr>";
+            echo "<td>".$result["idnumber"]."</td>";
+              // Function being called in a loop many times causing slowdown.
+            for($i=1; $i<=31;$i++){
+              $status = $student->studentHasRecord($result["idnumber"], "2019-3-".$i);
+              print $status;
+
+
+            }
           }
-          echo "</tr>";
         }
         ?>
         <tr>
