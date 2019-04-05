@@ -1,3 +1,7 @@
+* {
+  font-size: 12px;
+}
+
 .red {
   background-color: rgba(255, 0, 0, 0.5);
 }
@@ -11,9 +15,23 @@
 }
 
 .white {
-  background-color: rgba(255, 255, 255, 0.5);  
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .blue {
   background-color: rgba(0, 0, 255, 0.5);
+}
+
+.tdDay {
+  white-space: nowrap;
+  width: 10px;
+
+}
+
+.tdStudent {
+  white-space: nowrap;
+}
+
+.cyan {
+  background-color: rgba(244, 66, 200, 0.5);
 }

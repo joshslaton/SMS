@@ -1,9 +1,10 @@
 <?php
   include "./DB.inc.php";
-
+  include "./calendar.php";
   class Student {
     function __construct(){
       $this->db = new db();
+      $this->cal = new Calendar();
       $this->studentArray = Array();
     }
 
@@ -20,21 +21,6 @@
         $this->studentTimeRecordToArray($id);
 
       }
-    }
-
-    function isWeekend($date){
-      // which are saturdays and sundays on $month
-
-      $mon = date("m",strtotime($date));
-      $day = date("d",strtotime($date));
-      $year = date("Y",strtotime($date));
-      $dow  = date("N", strtotime($date));
-
-      // h, m, s, M, d, Y
-      if($dow == 6 || $dow == 7){
-        return True;
-      }
-      return False;
     }
 
     function studentInfoToArray($idnumber){
@@ -77,21 +63,34 @@
         // print("<pre>");
         // print_r($results);
         // print("</pre>");
-        if($results == null){
-          if(!$this->isWeekend($day))
-            return "<td>".date("d", strtotime($day))."</td>";
-          else
-            return "<td class='red'>".date("d", strtotime($day))."</td>";
+        if($results == null){ // no record
+          if(!$this->cal->isWeekend($day)){ // not weekend
+            if(!$this->cal->isHoliday($day)) // not holiday
+              return "<td class='tDay'>".date("d", strtotime($day))."</td>";
+            else // holiday
+              return "<td class='tDay cyan'>".date("d", strtotime($day))."</td>";
+
+          }
+          else{
+            // if weekend
+            if(!$this->cal->isHoliday($day))
+              return "<td class='red tDay'>".date("d", strtotime($day))."</td>";
+            else
+              return "<td class='cyan tDay'>".date("d", strtotime($day))."</td>";
+          }
         }
         else{
 
-          // weekend/holiday/no classes
-          if($results[0]["DIN"] >= 1 && $results[0]["DOUT"] >= 1)
-            return "<td class='green'>".date("d", strtotime($day))."</td>";
-          if($results[0]["DIN"] >= 1 && $results[0]["DOUT"] == 0)
-            return "<td class='yellow'>".date("d", strtotime($day))."</td>";
-          if($results[0]["DIN"] == 0 && $results[0]["DOUT"] >= 1)
-            return "<td class='blue'>".date("d", strtotime($day))."</td>";
+          if(!$this->cal->isHoliday($day)){
+            if($results[0]["DIN"] >= 1 && $results[0]["DOUT"] >= 1)
+              return "<td class='green tDay'>".date("d", strtotime($day))."</td>";
+            if($results[0]["DIN"] >= 1 && $results[0]["DOUT"] == 0)
+              return "<td class='yellow tDay'>".date("d", strtotime($day))."</td>";
+            if($results[0]["DIN"] == 0 && $results[0]["DOUT"] >= 1)
+              return "<td class='blue tDay'>".date("d", strtotime($day))."</td>";
+          }else{
+            return "<td class='cyan>".date("d", strtotime($day))."</td>";
+          }
         }
     }
 

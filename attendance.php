@@ -3,9 +3,12 @@ include "./student.php";
 
 $student = new Student();
 $student -> init();
-// exit(0);
-// print_r($student-> studentHasInRecord("2900876", "2019-4-1"));
+
+// Should be in calendar class
+$m = "4";
+$dom = date("t", mktime(0, 0, 0, $m, 1));
 ?>
+
 <html>
 
 <head>
@@ -18,11 +21,21 @@ $student -> init();
 <body>
   <!-- <label>Date: </label><input type="text"/><button class="btn btn-primary">Go</button> -->
   <table class="table">
+      <!--  PUT THIS IN A FUNCTION -->
       <tr>
         <td>Month Label</td>
         <?php
-          for($i = 1; $i <= 31; $i++){
-            echo "<td>".$i."</td>";
+          for($i = 1; $i <= $dom; $i++){
+            echo "<td class='tDay'>".$i."</td>";
+          }
+        ?>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <?php
+          for($i = 1; $i <= $dom; $i++){
+            echo "<td class='tDay'>".date("D", mktime(0, 0, 0, $m, $i))."</td>";
           }
         ?>
         <td></td>
@@ -33,14 +46,15 @@ $student -> init();
         <?php
         // TODO: Remove student array
         $db = new db();
-        if($results = $db->query("SELECT idnumber, grade FROM preschool")->fetchAll()){
+        // TODO: Sort male and female
+        if($results = $db->query("SELECT idnumber, name, grade FROM preschool")->fetchAll()){
           foreach($results as $result){
-            if($result["grade"] == "nursery"){
+            if($result["grade"] != ""){
               echo "<tr>";
-              echo "<td>".$result["idnumber"]."</td>";
+              echo "<td class='tdStudent'>".$result["idnumber"]."<br>".$result["name"]."</td>";
               // Check each day of month if student has time record in it
-              for($i=1; $i<=31; $i++){
-                print($student->studentHasRecord($result["idnumber"],"2019-4-".$i));
+              for($i=1; $i<=$dom; $i++){
+                print($student->studentHasRecord($result["idnumber"],"2019-".$m."-".$i));
               }
             }
           }
