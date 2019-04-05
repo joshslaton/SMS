@@ -2,15 +2,14 @@
   include "./DB.inc.php";
 
   class Student {
-
     function __construct(){
+      $this->db = new db();
       $this->studentArray = Array();
     }
 
     function init(){
       // Initialize every student record with array
-      $db = new db();
-      $results = $db->query("SELECT idnumber FROM preschool WHERE idnumber")->fetchAll();
+      $results = $this->db->query("SELECT idnumber FROM preschool WHERE idnumber")->fetchAll();
       foreach($results as $result){
         $id = $result["idnumber"];
         // print("Student ID: ");
@@ -23,9 +22,23 @@
       }
     }
 
+    function isWeekend($date){
+      // which are saturdays and sundays on $month
+
+      $mon = date("m",strtotime($date));
+      $day = date("d",strtotime($date));
+      $year = date("Y",strtotime($date));
+      $dow  = date("N", strtotime($date));
+
+      // h, m, s, M, d, Y
+      if($dow == 6 || $dow == 7){
+        return True;
+      }
+      return False;
+    }
+
     function studentInfoToArray($idnumber){
-      $db = new db();
-      if($results = $db->query("SELECT * FROM preschool WHERE idnumber = ".$idnumber)->fetchAll()){
+      if($results = $this->db->query("SELECT * FROM preschool WHERE idnumber = ".$idnumber)->fetchAll()){
         foreach($results as $result){
           $this->studentArray[$idnumber]["name"] = $result["name"];
           $this->studentArray[$idnumber]["grade"] = $result["grade"];
@@ -37,8 +50,7 @@
     }
 
     function studentTimeRecordToArray($idnumber){
-      $db = new db();
-      $results = $db->query("SELECT direction, time_recorded FROM gatekeeper_in WHERE idnumber=".$idnumber)->fetchAll();
+      $results = $this->db->query("SELECT direction, time_recorded FROM gatekeeper_in WHERE idnumber=".$idnumber)->fetchAll();
       foreach($results as $result){
         if($result["direction"] == "in"){
           array_push($this->studentArray[$idnumber]["time_in"], $result["time_recorded"]);
@@ -50,7 +62,6 @@
     }
 
     function studentHasRecord($idnumber, $day){
-        $db = new db();
         $q = "SELECT CONCAT(year(time_recorded),'-',month(time_recorded),'-',dayofmonth(time_recorded)) as DDATE, ";
         $q .= " SUM(if(direction='in',1,0)) as DIN,";
         $q .= " SUM(if(direction='in',0,1)) as DOUT,";
@@ -62,21 +73,25 @@
         $q .= " AND year(time_recorded)=year('".$day."')";
         $q .= " GROUP by DDATE, idnumber";
         $q .= " ORDER  BY DDATE ASC";
-        $results = $db->query($q)->fetchAll();
+        $results = $this->db->query($q)->fetchAll();
+        // print("<pre>");
+        // print_r($results);
+        // print("</pre>");
         if($results == null){
-          return "<td class='red'></td>";
+          if(!$this->isWeekend($day))
+            return "<td>".date("d", strtotime($day))."</td>";
+          else
+            return "<td class='red'>".date("d", strtotime($day))."</td>";
         }
         else{
-          // print("<br>");
-          // print("dIN:".$results[0]["DIN"]." - dOUT: ".$results[0]["DOUT"]);
-          if($results[0]["DIN"] == 1 && $results[0]["DOUT"] == 1)
-            return "<td class='green'></td>";
-          if($results[0]["DIN"] == 1 && $results[0]["DOUT"] == 0)
-            return "<td class='yellow'></td>";
-          if($results[0]["DIN"] == 0 && $results[0]["DOUT"] == 1)
-            return "<td class='blue'></td>";
-          // if($results[0]["DIN"] == 0 && $results[0]["DOUT"] == 0)
-          //   return "<td class='red'></td>";
+
+          // weekend/holiday/no classes
+          if($results[0]["DIN"] >= 1 && $results[0]["DOUT"] >= 1)
+            return "<td class='green'>".date("d", strtotime($day))."</td>";
+          if($results[0]["DIN"] >= 1 && $results[0]["DOUT"] == 0)
+            return "<td class='yellow'>".date("d", strtotime($day))."</td>";
+          if($results[0]["DIN"] == 0 && $results[0]["DOUT"] >= 1)
+            return "<td class='blue'>".date("d", strtotime($day))."</td>";
         }
     }
 
