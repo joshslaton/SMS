@@ -35,3 +35,9 @@
 .cyan {
   background-color: rgba(244, 66, 200, 0.5);
 }
+
+.tableHead {
+  color: white;
+  background-color: green;
+  font-weight: bold;
+}

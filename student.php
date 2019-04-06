@@ -99,6 +99,16 @@
       print_r($this->studentArray);
       echo '</pre>';
     }
+
+    function getSections(){
+      $sec = Array();
+      if($results = $this->db->query("SELECT DISTINCT grade FROM preschool")->fetchAll()){
+        foreach($results as $result){
+          array_push($sec, $result);
+        }
+        return $sec;
+      }
+    }
 }
 
 // $student = new Student();
