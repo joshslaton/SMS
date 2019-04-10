@@ -1,0 +1,27 @@
+* {
+  box-sizing: content-box;
+  display: block;
+}
+
+body {
+  display: block;
+}
+.wrapper {
+  min-width: 1024px;
+}
+
+.options-container {
+  margin: 0 auto;
+  min-width: 1280px;
+  max-width: 1280px;
+  margin-top: 50px;
+  border-bottom: 3px solid black;
+}
+
+.tab {
+  margin: 2px;
+  background-color: rgb(0, 255, 0, 0.3);
+  width: calc( 1180px / 4);
+  float:left;
+  padding: 10px;
+}
