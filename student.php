@@ -109,6 +109,42 @@
         return $sec;
       }
     }
+
+    function getGradeLevel() {
+      $gradeLevel = Array();
+      if($results = $this->db->query("SELECT DISTINCT grade FROM preschool")->fetchAll()){
+        foreach($results as $result){
+          if(!$result["grade"] == ""){
+            array_push($gradeLevel, $result["grade"]);
+          }
+        }
+
+      }
+      return $gradeLevel;
+    }
+
+    function getSection($gradeLevel) {
+      $section = Array();
+      if($results = $this->db->query("SELECT DISTINCT section FROM preschool WHERE grade='".$gradeLevel."'")->fetchAll()){
+        foreach($results as $result){
+          if(!$result["section"] == ""){
+            array_push($section, $result["section"]);
+          }
+        }
+      return $section;
+      }
+    }
+
+    function getGender() {
+      $gender = Array();
+      $q = "SELECT DISTINCT IF(gender='m','Male','Female') AS gender FROM preschool";
+      if($results = $this->db->query($q)->fetchAll()){
+        foreach($results as $result){
+          array_push($gender, $result);
+        }
+      return $gender;
+      }
+    }
 }
 
 // $student = new Student();

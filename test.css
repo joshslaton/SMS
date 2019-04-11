@@ -25,3 +25,9 @@ body {
   float:left;
   padding: 10px;
 }
+
+.tabTitle {
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px black solid;
+}
