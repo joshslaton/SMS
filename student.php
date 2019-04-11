@@ -145,6 +145,17 @@
       return $gender;
       }
     }
+
+    function getDates(){
+      $dates = Array();
+      $q = "SELECT DISTINCT CONCAT(year(time_recorded),'-',month(time_recorded)) as date FROM gatekeeper_in";
+      if($results = $this->db->query($q)->fetchAll()){
+        foreach($results as $result){
+          array_push($dates, $result);
+        }
+      }
+      return $dates;
+    }
 }
 
 // $student = new Student();

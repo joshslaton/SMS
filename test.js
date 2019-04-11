@@ -1,25 +1,28 @@
-$(document).ready(function(){
-  $('input:checkbox').change(function(){
-    if(this.checked){
-      var grade = [];
-      $('input[type=checkbox][id=grade]:checked').each(function(){
-        grade.push($(this).val());
+// TODO: can an ajax loaded page fire an event?
 
+$(document).ready(function(){
+  $("input[type=checkbox]").change(function(){
+    console.table($(this).val());
+    var checked = [];
+    $("input[type=checkbox][name=grade]:checked").each(function(){
+      checked.push($(this).val());
+    });
+
+    if(checked.length > 0){
+      $.ajax({
+        type: "post",
+        url: "getSection.php",
+        data: { gradeLevel: checked },
+        success: function(data){
+          $('div[name=section-content]').html(data);
+        }
       });
-      if(grade.length > 0){
-        $.ajax({
-          type: 'post',
-          url: 'test.php',
-          data: {
-            grade: grade
-          },
-          success: function(data){
-            $('body').html(data);
-            $('input[type=checkbox][id=section]').prop("checked");
-          }
-        })
-      }
+    }else{
+      $('div[name=section-content]').html("");
     }
   });
 
+  $("input[type=checkbox][name=section]").change(function(){
+    console.log("section changed");
+  });
 })
