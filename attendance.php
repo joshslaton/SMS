@@ -4,10 +4,17 @@ include "./student.php";
 
 $student = new Student();
 $student -> init();
-if(isset($_POST["date"]) && isset($_POST["grade"]) && isset($_POST["section"])){
+
+if(isset($_POST["date"]) && isset($_POST["grade"]) && isset($_POST["sec"]) && isset($_POST["gender"])){
   $m = date("n", strtotime($_POST["date"]."-1"));
   $grade = $_POST["grade"];
-  $section = $_POST["section"];
+  $section = $_POST["sec"];
+
+  // Lazy coding
+  if($_POST["gender"] == "Male")
+    $gender = "m";
+  elseif ($_POST["gender"] == "Female")
+    $gender = "f";
 
   $dom = date("t", mktime(0, 0, 0, $m, 1));
 ?>
@@ -39,7 +46,7 @@ if(isset($_POST["date"]) && isset($_POST["grade"]) && isset($_POST["section"])){
       // TODO: Remove student array
       $db = new db();
       // TODO: Sort male and female
-      if($results = $db->query("SELECT idnumber, name, grade FROM preschool WHERE grade='".$grade."' and section='".$section."'")->fetchAll()){
+      if($results = $db->query("SELECT idnumber, name, grade FROM preschool WHERE grade='".$grade."' and section='".$section."' and gender='".$gender."'")->fetchAll()){
         foreach($results as $result){
           if(!$result["grade"] == ""){
             echo "<tr>";

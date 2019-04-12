@@ -1,10 +1,15 @@
 <?php
 class Calendar{
   // TODO: color coded day that have passed and have not.
+
+  function buildCalendar($month, $year){
+    $monthName =
+    $calendar = "<table class='calendar'>";
+    $calendar .= "<caption>Caption</caption>";
+  }
+
   function daysInMonth($m){
-    echo "dom";
-    // print_r($m);
-    return date("n", strtotime($m));
+    return date("t", strtotime($m));
   }
 
   function isWeekend($date){

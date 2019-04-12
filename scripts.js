@@ -1,62 +1,57 @@
+// TODO: can an ajax loaded page fire an event?2
+
 $(document).ready(function(){
-  $("input[type=button][name=submit]").click(function(){
-    update();
-  });
-
-  // $("input[type=checkbox][name=date]").change(function(){
-  //   var date = $(this).val();
-  //   console.log(date);
-  // });
-  //
-  // $("input[type=checkbox][name=grade]").change(function(){
-  //   var grade = $(this).val();
-  //   console.log(grade);
-  //
-  // });
-  //
-  // $("input[type=checkbox][name=section]").change(function(){
-  //   var section = $(this).val();
-  //   console.log(section);
-  //
-  // });
-
-  function update(){
-    var date = [];
-    var grade = [];
-    var section = [];
+  var dateArray = [];
+  var gradeArray = [];
+  var sectionArray = [];
+  var genderArray = [];
+  $(document).on("change", "input[type=checkbox], input[type=radio]", function(){
 
     $("input[type=radio][name=date]:checked").each(function(){
-      var val = $(this).val();
-      date.push(val);
+      dateArray.push($(this).val());
     });
-    $("input[type=checkbox][name=grade]:checked").each(function(){
-      grade.push($(this).val());
+    $("input[type=radio][name=grade]:checked").each(function(){
+      gradeArray.push($(this).val());
     });
-    $("input[type=checkbox][name=section]:checked").each(function(){
-      section.push($(this).val());
+    $("input[type=radio][name=section]:checked").each(function(){
+      sectionArray.push($(this).val());
+    });
+    $("input[type=checkbox][name=gender]:checked").each(function(){
+      genderArray.push($(this).val());
     });
 
-    var sDate;
-    var sGrade;
-    var sSection;
-    sDate = date.join(",");
-    sGrade = grade.join(",");
-    sSection = section.join(",");
-
-    console.log(sGrade);
-    if(date.length > 0 && grade.length > 0 && section.length > 0){
+    if(dateArray.length > 0 && gradeArray.length > 0 && sectionArray.length > 0 && genderArray.length > 0){
+      console.clear();
+      // console.table({dateArray, gradeArray, sectionArray, genderArray});
+      var date;
+      var grade;
+      var section;
+      date = dateArray.join("");
+      grade = gradeArray.join("");
+      section = sectionArray.join("");
+      gender = genderArray.join("");
+      // console.table({date, grade, section});
       $.ajax({
         type: "post",
         url: "attendance.php",
         data: {
-          date: sDate,
-          grade: sGrade,
-          section: sSection
+          date: date,
+          grade: grade,
+          sec: section,
+          gender: gender
         },
         success: function(data){
-          $(".content").html(data);
+          $("div.content").html(data);
         }
       })
     }
+    reset();
+  });
+
+  function reset(){
+    dateArray.length = 0;
+    gradeArray.length = 0;
+    sectionArray.length = 0;
+    genderArray.length = 0;
   }
-});
+})

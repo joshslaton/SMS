@@ -9,7 +9,7 @@ if(isset($_POST['gradeLevel']) && $_POST['gradeLevel'] != ""){
       echo "<div class='form-check'>";
       echo "<input class='form-check-input section' name='section' type='checkbox' value='".$section."' id='section-".$section."'>";
       echo "<label class='form-check-label' for='section-".$section."'>";
-      echo $gl." - ".$section;
+      echo $section."(".$gl.")";
       echo "</label>";
       echo "</div>";
     }

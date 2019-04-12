@@ -94,12 +94,6 @@
         }
     }
 
-    function debug(){
-      echo '<pre>';
-      print_r($this->studentArray);
-      echo '</pre>';
-    }
-
     function getSections(){
       $sec = Array();
       if($results = $this->db->query("SELECT DISTINCT grade FROM preschool")->fetchAll()){
@@ -123,9 +117,9 @@
       return $gradeLevel;
     }
 
-    function getSection($gradeLevel) {
+    function getSection() {
       $section = Array();
-      if($results = $this->db->query("SELECT DISTINCT section FROM preschool WHERE grade='".$gradeLevel."'")->fetchAll()){
+      if($results = $this->db->query("SELECT DISTINCT section FROM preschool")->fetchAll()){
         foreach($results as $result){
           if(!$result["section"] == ""){
             array_push($section, $result["section"]);
@@ -157,8 +151,4 @@
       return $dates;
     }
 }
-
-// $student = new Student();
-// $student -> init();
-// $student -> debug();
 ?>
