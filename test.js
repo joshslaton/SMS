@@ -1,8 +1,8 @@
-// TODO: can an ajax loaded page fire an event?
+// TODO: can an ajax loaded page fire an event?2
 
 $(document).ready(function(){
   $("input[type=checkbox]").change(function(){
-    console.table($(this).val());
+    console.log(this.checked);
     var checked = [];
     $("input[type=checkbox][name=grade]:checked").each(function(){
       checked.push($(this).val());
@@ -22,7 +22,7 @@ $(document).ready(function(){
     }
   });
 
-  $("input[type=checkbox][name=section]").change(function(){
-    console.log("section changed");
+  $(document).on("change", "input.section", function(){
+    console.log($(this).val());
   });
 })

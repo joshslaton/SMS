@@ -24,13 +24,15 @@ $student = new Student();
         // Date
         echo "<div class='tab'>";
         echo "<div class='tabTitle red'>Date</div>";
+        $c = 1;
         foreach($student->getDates() as $dates){
           echo "<div class='form-check'>";
-          echo "<input class='form-check-input' name='date' type='checkbox' value='".$dates["date"]."' id=''>";
-          echo "<label class='form-check-label' for=''>";
+          echo "<input class='form-check-input' name='date' type='checkbox' value='".$dates["date"]."' id='section".$c."'>";
+          echo "<label class='form-check-label' for='section".$c."'>";
           echo $dates["date"];
           echo "</label>";
           echo "</div>";
+          $c = $c + 1;
         }
         echo "</div>";
 
@@ -53,7 +55,7 @@ $student = new Student();
         echo "<div class='tab'>";
         echo "<div class='tabTitle yellow'>Section</div>";
         echo "<div name='section-content'>";
-        
+
         echo "</div>";
         echo "</div>";
         ?>
