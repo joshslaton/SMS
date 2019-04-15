@@ -1,6 +1,3 @@
 <?php
-DEFINE("DBHOST", "localhost");
-DEFINE("DBUSER", "kiosk");
-DEFINE("DBPASS", "kiosk");
-DEFINE("DBNAME", "preschool_gatekeeper");
+DEFINE("SERVER_ROOT", dirname(__DIR__)."/");
 ?>

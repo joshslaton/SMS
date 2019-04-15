@@ -1,6 +1,6 @@
 <?php
-  include "./DB.inc.php";
-  include "./calendar.php";
+  include ("/var/www/html/SMS-DEV/includes/DB.inc.php");
+  include "calendar.php";
   class Student {
     function __construct(){
       $this->db = new db();

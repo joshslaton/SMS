@@ -48,4 +48,5 @@ class App extends SMS{
 
 $app = new App();
 $app->init();
+print getenv ("SCRIPT_NAME");
 ?>

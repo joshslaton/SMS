@@ -33,7 +33,7 @@ $(document).ready(function(){
       // console.table({date, grade, section});
       $.ajax({
         type: "post",
-        url: "attendance.php",
+        url: "http://192.168.8.222/SMS-DEV/modules/attendance.php",
         data: {
           date: date,
           grade: grade,

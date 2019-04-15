@@ -1,5 +1,5 @@
 <?php
-include "student.php";
+include_once("/var/www/html/SMS-DEV/modules/student.php");
 $student = new Student();
 
 // print_r($student->getSection("kinder"));
@@ -11,8 +11,8 @@ $student = new Student();
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" type="text/text/javascript"></script>
-    <script src="./scripts.js"></script>
-    <link href="./style.css" rel="stylesheet">
+    <script src="scripts.js"></script>
+    <link href="style.css" rel="stylesheet">
   </head>
   <body>
     <div class='wrapper'>
@@ -77,6 +77,28 @@ $student = new Student();
             echo "</div>";
           }
         }
+        echo "</div>";
+
+        // Legend
+        echo "<div class='tab'>";
+        echo "<div class='tabTitle orange'>Legend</div>";
+        echo "<br><table>";
+          echo "<tr>";
+            echo "<td class='yellow'>IN Only</td>";
+          echo "</tr>";
+          echo "<tr>";
+            echo "<td class='blue'>OUT Only</td>";
+          echo "</tr>";
+          echo "<tr>";
+            echo "<td class='green'>IN and OUT</td>";
+          echo "</tr>";
+          echo "<tr>";
+            echo "<td class='cyan'>Holiday</td>";
+          echo "</tr>";
+          echo "<tr>";
+            echo "<td class='red'>Weekend</td>";
+          echo "</tr>";
+        echo "</table>";
         echo "</div>";
 
         ?>

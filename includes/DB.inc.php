@@ -1,5 +1,5 @@
 <?php
-include_once "./config.php";
+include_once "DB.config.php";
 class db {
 
   protected $connection;

@@ -1,6 +1,6 @@
 <?php
 // https://stackoverflow.com/questions/14080049/jquery-changing-value-binding-in-database-with-ajax-mysql
-include "./student.php";
+include "/var/www/html/SMS-DEV/modules/student.php";
 
 $student = new Student();
 $student -> init();
@@ -16,7 +16,6 @@ if(isset($_POST["date"]) && isset($_POST["grade"]) && isset($_POST["sec"]) && is
 
   $dom = date("t", mktime(0, 0, 0, $m, 1));
 ?>
-
 <table class="table">
     <!--  PUT THIS IN A FUNCTION -->
     <tr class="tableHead">
@@ -44,7 +43,6 @@ if(isset($_POST["date"]) && isset($_POST["grade"]) && isset($_POST["sec"]) && is
       $db = new db();
       // TODO: Sort male and female
       $q = "SELECT idnumber, name, grade FROM preschool WHERE grade='".$grade."' and section='".$section."' and gender=".$stmt;
-      print_r($q);
       if($results = $db->query($q)->fetchAll()){
         foreach($results as $result){
           if(!$result["grade"] == ""){
