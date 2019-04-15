@@ -29,7 +29,7 @@ $(document).ready(function(){
       date = dateArray.join("");
       grade = gradeArray.join("");
       section = sectionArray.join("");
-      gender = genderArray.join("");
+      // gender = genderArray.join("");
       // console.table({date, grade, section});
       $.ajax({
         type: "post",
@@ -38,7 +38,7 @@ $(document).ready(function(){
           date: date,
           grade: grade,
           sec: section,
-          gender: gender
+          gender: genderArray
         },
         success: function(data){
           $("div.content").html(data);

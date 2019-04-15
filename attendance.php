@@ -9,12 +9,10 @@ if(isset($_POST["date"]) && isset($_POST["grade"]) && isset($_POST["sec"]) && is
   $m = date("n", strtotime($_POST["date"]."-1"));
   $grade = $_POST["grade"];
   $section = $_POST["sec"];
+  $gender = $_POST["gender"];
 
-  // Lazy coding
-  if($_POST["gender"] == "Male")
-    $gender = "m";
-  elseif ($_POST["gender"] == "Female")
-    $gender = "f";
+  // Lazy coding: Cheat to add mysql condition where male and female is included.
+  $stmt = (sizeof($gender) > 1 ? "'m' & 'f'" : ($gender[0]=='m' ? "'m'" : "'f'"));
 
   $dom = date("t", mktime(0, 0, 0, $m, 1));
 ?>
@@ -43,10 +41,11 @@ if(isset($_POST["date"]) && isset($_POST["grade"]) && isset($_POST["sec"]) && is
       <td>Student</td>
     </tr> -->
       <?php
-      // TODO: Remove student array
       $db = new db();
       // TODO: Sort male and female
-      if($results = $db->query("SELECT idnumber, name, grade FROM preschool WHERE grade='".$grade."' and section='".$section."' and gender='".$gender."'")->fetchAll()){
+      $q = "SELECT idnumber, name, grade FROM preschool WHERE grade='".$grade."' and section='".$section."' and gender=".$stmt;
+      print_r($q);
+      if($results = $db->query($q)->fetchAll()){
         foreach($results as $result){
           if(!$result["grade"] == ""){
             echo "<tr>";
