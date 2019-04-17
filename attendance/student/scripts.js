@@ -63,4 +63,21 @@ $(document).ready(function(){
     $('#searchResults').css("display", "None");
   })
 
+  $(document).on("click", "#searchProfile", function(){
+    // Hard coded to only accept IDNUMBER
+    if($("#enterStudentID").val().length == 7){
+      var studentID = $("#enterStudentID").val();
+      $.ajax({
+        type: 'post',
+        url: 'modules/profile.php',
+        data: { studentID: studentID },
+        success: function(data){
+          $('#profileResult').css("display", "block");
+          $('#frameInner').html(data);
+        }
+      })
+    }
+  })
+
+
 })

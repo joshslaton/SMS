@@ -10,6 +10,7 @@ if(isset($_POST["studentID"]) && $_POST["studentID"] != ""){
         echo "<tr id='studentInfo' data-id='".$result["idnumber"]."' data-name='".$result["name"]."'>";
         echo "<td>".$result["idnumber"]."</td>";
         echo "<td>".$result["name"]."</td>";
+        echo "<td>".$result["grade"]." - ".$result["section"]."</td>";
         echo "</tr>";
       }
     }
