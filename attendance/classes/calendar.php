@@ -80,6 +80,7 @@ class calendar {
     $present = 0;
     $absent = 0;
     $results = $this->db->query("SELECT `time_recorded` FROM gatekeeper_in WHERE idnumber='".$studentID."'")->fetchAll();
+
     foreach($results as $result){
       if((strtotime($result["time_recorded"]) >= strtotime($this->schoolYear["start"])
         && strtotime($result["time_recorded"]) <= strtotime($this->schoolYear["end"]))
