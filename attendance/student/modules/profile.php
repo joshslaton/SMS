@@ -1,17 +1,26 @@
 <?php
-include_once('../../includes/DB.inc.php');
+include_once($_SERVER["DOCUMENT_ROOT"].'includes/DB.inc.php');
 $db = new db();
 
 ?>
-
-
 <?php
 if(isset($_POST["studentID"]) && $_POST["studentID"] != ""){
-$results = $db->query("SELECT * FROM preschool WHERE idnumber=".$_POST["studentID"])->fetchAll();
+$results = $db->query("SELECT *, concat(contact1,' ', contact2,' ', contact3) as contact FROM preschool WHERE idnumber=".$_POST["studentID"])->fetchAll();
 foreach($results as $result){
 ?>
 <table border=1 cellpadding=10>
   <tbody>
+    <tr>
+      <td colspan="3">
+        <span>
+          <form action='http://localhost/SMS/attendance/reports/' method='get'>
+            <input type='submit' class='btn btn-primary' value='Attendance'>
+            <input type='hidden' name='idnumber' value='<?php echo $_POST['studentID'] ?>'>
+            <input type='hidden' name='category' value='byStudent'>
+          </form>
+        </span>
+      </td>
+    </tr>
     <tr>
       <td rowspan='7'>
         <img src='./res/avatar.png' id='profile-picture'>
@@ -40,7 +49,7 @@ foreach($results as $result){
       </tr>
       <tr>
         <td><span class='profileLabel'>Contact #:</span></td>
-        <td><span id='profileSex-value'><?php echo $result["contact1"]; ?></span></td>
+        <td><span id='profileSex-value'><?php  ?></span></td>
       </tr>
     </tr>
     <tr>
@@ -57,7 +66,7 @@ foreach($results as $result){
     <tr>
       <td colspan='3'>
         <span class='profileLabel'>Contact:</span>
-        <span id='profileGuardianContact-value'></span>
+        <span id='profileGuardianContact-value'><?php echo $result["contact"]; ?></span>
       </td>
     </tr>
     <tr>

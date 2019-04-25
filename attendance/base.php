@@ -10,32 +10,16 @@
   </head>
   <body>
     <?php include_once($_SERVER["DOCUMENT_ROOT"]."/templates/header.php"); ?>
+    <!-- Removed because the dropdown menu is inside a div not showing the full content -->
     <div class='nav-sub-container'>
       <ul id='nav-sub'>
-        <li><a href='#'>Student Info</a></li>
-        <li><a href='#'>Add Student</a></li>
+        <li><a href='#'>Nav 1</a></li>
+        <li><a href='#'>Nav 2</a></li>
+        <li><a href='#'>Nav 3</a></li>
       </ul>
     </div>
     <div class='content-wrapper'>
-      <div><p id='status'>Status</p></div>
-      <!-- TODO: Search student by name or student id -->
-      <div class='content-search'>
-        <label>
-          Student ID:
-          <input type='text' id='enterStudentID'>
-        </label>
-        <!-- BETTER NAMES -->
-        <input type='button' id='searchProfile' class='btn btn-success' value='Submit'>
-      </div>
-      <div id='searchResults'>
-      </div>
-      <div id='profileResult'>
-        <div id='frameOuter'>
-          <div id='frameInner'>
-            Display None
-          </div>
-        </div>
-      </div>
+
     </div>
   </body>
 </html>
