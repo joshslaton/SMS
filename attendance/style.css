@@ -17,17 +17,25 @@ body {
 * {
   font-family: 'Montserrat', sans-serif;
 }
+.nav-main-container {
+  position: relative;
+}
+
+.nav-main-container div {
+  display: inline-block;
+}
 
 #nav-main{
   background-color: white;
   width: 100%;
-  float: left;
+  /* float: left; */
   margin: 0 0 -1 0;
   padding: 0;
   list-style: none;
   border-bottom: 1px solid #ccc;
 	border-top: 1px solid #ccc;
 }
+
 #nav-main li {
   float: left;
 }
@@ -44,19 +52,34 @@ body {
   /* background-color: #fff; */
 }
 
-#nav-sub{
+
+
+.nav-sub-container {
+  position: relative;
   background-color: green;
-  width: 100%;
-  float: left;
+  width: 100vw;
+}
+
+.nav-sub-container div{
+}
+
+
+#nav-sub{
+  position: relative;
+  background-color: green;
+  /* float: left; */
   margin: 0 0 -1 0;
   padding: 0;
   list-style: none;
   border-bottom: 1px solid #ccc;
 	border-top: 1px solid #ccc;
 }
+
 #nav-sub li {
-  float: left;
+  display: inline-block;
+  /* float: left; */
 }
+
 #nav-sub li a {
   font-size: 12px;
 	display: block;
@@ -66,6 +89,7 @@ body {
 	color: white;
 	border-right: 1px solid #ccc;
 }
+
 #nav-sub li a:hover {
 	color: #c00;
 	/* background-color: #fff; */
@@ -152,6 +176,7 @@ tr#studentInfo:hover {
   /* width: 100%; */
   display: inline-block;
   position: relative;
+  z-index: 2;
 }
 
 .dropdown-content {

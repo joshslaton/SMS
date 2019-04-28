@@ -13,11 +13,12 @@
   </head>
   <body>
     <?php include_once($_SERVER["DOCUMENT_ROOT"]."/templates/header.php"); ?>
-    <div class='dropdown'>
+    <div class='nav-sub-container'>
+      <div class='dropdown'>
       <div>
-      <ul id='nav-sub'>
-        <li><a id='attendance' href='#'>Attendance</a></li>
-      </ul>
+        <ul id='nav-sub'>
+          <li><a id='attendance' href='#'>Attendance</a></li>
+        </ul>
       </div>
       <div class='dropdown-content'>
         <a href='http://localhost/reports/attendance/student/' id='reports-category-bystudent'>By Student</a>
@@ -25,6 +26,8 @@
         <a href='http://localhost/reports/attendance/section/' id='reports-category-bysection'>By Section</a>
       </div>
     </div>
+    </div>
+
     <div class='sidebar'>
       <p class='options-title'>Gender</p>
       <?php

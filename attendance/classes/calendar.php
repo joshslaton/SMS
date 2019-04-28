@@ -7,6 +7,7 @@ class calendar {
     "end"=>"2019-05-31"
   );
 
+
   private $holidays = Array(
     "January" => Array(1 => "New Year"),
     "February" => Array(5 => "Chinese New Year", 25 => "EDSA Revolution"),
@@ -19,6 +20,7 @@ class calendar {
 
   function __construct(){
     $this->db = new db();
+    $this->monthsToIterate = $this->monthsToIterate($this->schoolYear["start"], $this->schoolYear["end"]);
   }
 
   // TODO: Too many loops ? Not effiient ?
@@ -39,7 +41,7 @@ class calendar {
     return date("t", mktime(0, 0, 0, $m, 1));
   }
 
-  // Accepts "Y-m-d"
+  // TODO: Remove this soon
   function monthsToIterate($startDate, $endDate){
       $monthsToIterate = Array();
       $mStart = date("n", strtotime($startDate));
@@ -55,38 +57,47 @@ class calendar {
       }
       return $monthsToIterate;
   }
+
   function isWeekend($date){
     if(date("N", strtotime($date)) == 6 || date("N", strtotime($date)) == 7)
       return True;
   }
 
-  function numberOfSchoolDays($startDate, $endDate){
-    $schoolDays = abs(strtotime($startDate) - strtotime($endDate));
-    $schoolDays = $schoolDays / ( 60 * 60 * 24 );
-    // $db = new db("localhost","kiosk","kiosk","school");
-    foreach($this->monthsToIterate($this->schoolYear["start"], $this->schoolYear["end"]) as $m){
-      for($i=1; $i <= $this->daysInMonth($m); $i++){
-        if($this->isHoliday("2019-$m-$i") || $this->isWeekend("2019-$m-$i")){
-          $schoolDays -= 1;
-        }
-      }
+  // Which days are school days based on schedule
+  function numberOfSchoolDays($startDate, $endDate, $subjectCode){
+    $db = new db("localhost", "kiosk", "kiosk", "school");
+    $q = "SELECT * FROM subjects WHERE code='$subjectCode'";
+    $results = $db->query($q)->fetchAll();
+    print_r($results[0]["days"]);
+    $schoolDaysarray = Array();
+    $begin = new DateTime($startDate);
+    $end = new DateTime($endDate);
+    $interval = DateInterval::createFromDateString("1 day");
+    $period = new DatePeriod($begin, $interval, $end);
+    foreach($period as $p){
+      // echo $p->format("Y-m-d");
+      // echo "<br>";
     }
-    return $schoolDays;
+
+    return "";
   }
 
 
-
+  // TODO: efficient way to check attendance.
   function numberOfDaysPresent($studentID){
     $present = 0;
     $absent = 0;
-    $results = $this->db->query("SELECT `time_recorded` FROM gatekeeper_in WHERE idnumber='".$studentID."'")->fetchAll();
+    $results = $this->db->query("SELECT DISTINCT concat(year(`time_recorded`),'-',month(`time_recorded`),'-',day(`time_recorded`)) as date FROM gatekeeper_in WHERE idnumber='".$studentID."'")->fetchAll();
 
-    foreach($results as $result){
-      if((strtotime($result["time_recorded"]) >= strtotime($this->schoolYear["start"])
-        && strtotime($result["time_recorded"]) <= strtotime($this->schoolYear["end"]))
-        ){
-        $present += 1;
-      }
+    $begin = new DateTime($this->schoolYear["start"]);
+    $end = new DateTime($this->schoolYear["end"]);
+
+    $interval = DateInterval::createFromDateString('1 day');
+    $period = new DatePeriod($begin, $interval, $end);
+
+    foreach ($period as $dt) {
+      echo $dt->format("Y-m-d");
+      echo "<br>";
     }
     return $present;
 
@@ -99,4 +110,12 @@ class calendar {
   }
 
 }
+
+$c = new calendar();
+$c->numberOfSchoolDays("2018-08-13", "2019-05-31", "GEN");
+// $c->numberOfDaysPresent("2900876");
+
+$start = new DateTime("2018-08-13");
+$end = new DateTime("2019-05-31");
+// print_r($start->format("Y-m-d"));
 ?>
