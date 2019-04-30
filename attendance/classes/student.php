@@ -68,19 +68,18 @@ class student{
     $content .= "<td>Name</td>";
     $content .= "<td>Present</td>";
     $content .= "<td>Absent</td>";
-    $content .= "<td>Late</td>";
-    // $content .= "<td>Excused</td>";
+    $content .= "<td></td>";
     $content .= "</thead>";
     $content .= "<tbody>";
     foreach($studentArray as $student){
       $idnumber = explode(" ", $student, 2)[0];
       $name = explode(" ", $student, 2)[1];
+      $attendanceInfoArray = $this->cal->numberOfDaysPresent($idnumber);
       $content .= "<tr>";
       $content .= "<td>".$idnumber."</td><td>".$name."</td>";
-      $content .= "<td>".$this->cal->numberOfDaysPresent($idnumber)."</td>"; // Present
-      $content .= "<td>".$this->cal->numberOfDaysAbsent($idnumber)."</td>"; // Absent
-      $content .= "<td>0</td>"; // Late
-      // $content .= "<td>0</td>"; // Excused ?
+      $content .= "<td>".$attendanceInfoArray[$idnumber]["present"]."</td>"; // Present
+      $content .= "<td>".$attendanceInfoArray[$idnumber]["absent"]."</td>"; // Present
+      $content .= "<td><input type='submit' class='btn btn-primary' value='Check Attendance'></td>";
       $content .= "</tr>";
     }
     $content .= "</tbody>";

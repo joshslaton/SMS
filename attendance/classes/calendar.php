@@ -8,19 +8,64 @@ class calendar {
   );
 
 
-  private $holidays = Array(
+
+  public $holidays = Array(
     "January" => Array(1 => "New Year"),
     "February" => Array(5 => "Chinese New Year", 25 => "EDSA Revolution"),
-    "April" => Array(18 => "Maundy Thursday", 19 => "Good Friday", 20 => "Black Saturday"),
+    "April" => Array(9 => "Day of Valor", 18 => "Maundy Thursday", 19 => "Good Friday", 20 => "Black Saturday"),
     "May" => Array(1 => "Labor Day"),
     "June" => Array(12 => "Independence Day"),
-    "August" => Array(21 => "Ninoy Aquino Day", 26 => "National Heroes Day"),
+    "August" => Array(21 => "Ninoy Aquino Day", 27 => "National Heroes Day"),
     "November" => Array(1 => "All Saints Day", 2 => "All Souls Day", 30 => "Bonifacio Day"),
-    "December" => Array(8 => "Feast of Immaculate Conception", 25 => "Christmas Day", 31 => "Last Day of the Year"));
+    "December" => Array(24 => "Special Non-working Holiday", 25 => "Christmas Day", 31 => "Last Day of the Year"));
 
   function __construct(){
     $this->db = new db();
     $this->monthsToIterate = $this->monthsToIterate($this->schoolYear["start"], $this->schoolYear["end"]);
+  }
+
+  function build_calendar($month, $year) {
+  	$daysOfWeek = array('S','M','T','W','T','F','S');
+  	$firstDayOfMonth = mktime(0,0,0,$month,1,$year);
+  	$numberDays = date('t',$firstDayOfMonth);
+  	$dateComponents = getdate($firstDayOfMonth);
+  	$monthName = $dateComponents['month'];
+  	$dayOfWeek = $dateComponents['wday'];
+  	$calendar = "<table class='calendar table table-condensed table-bordered'>";
+  	$calendar .= "<caption>$monthName $year</caption>";
+  	$calendar .= "<tr>";
+  	foreach($daysOfWeek as $day) {
+  		$calendar .= "<th class='header'>$day</th>";
+  	}
+  	$currentDay = 1;
+  	$calendar .= "</tr><tr>";
+  	if ($dayOfWeek > 0) {
+  		$calendar .= "<td colspan='$dayOfWeek'>&nbsp;</td>";
+  	}
+  	$month = str_pad($month, 2, "0", STR_PAD_LEFT);
+  	while($currentDay <= $numberDays){
+  		if($dayOfWeek == 7){
+  			$dayOfWeek = 0;
+  			$calendar .= "</tr><tr>";
+  		}
+  		$currentDayRel = str_pad($currentDay, 2, "0", STR_PAD_LEFT);
+  		$date = "$year-$month-$currentDayRel";
+  		// Is this today?
+  		if(date('Y-m-d') == $date) {
+  			$calendar .= "<td class='day success' rel='$date'><b>$currentDay</b></td>";
+  		} else {
+  			$calendar .= "<td class='day' rel='$date'>$currentDay</td>";
+  		}
+  		$currentDay++;
+  		$dayOfWeek++;
+  	}
+  	if($dayOfWeek != 7){
+  		$remainingDays = 7 - $dayOfWeek;
+  		$calendar .= "<td colspan='$remainingDays'>&nbsp;</td>";
+  	}
+  	$calendar .= "</tr>";
+  	$calendar .= "</table>";
+  	return $calendar;
   }
 
   // TODO: Too many loops ? Not effiient ?
@@ -63,43 +108,73 @@ class calendar {
       return True;
   }
 
-  // Which days are school days based on schedule
-  function numberOfSchoolDays($startDate, $endDate, $subjectCode){
-    $db = new db("localhost", "kiosk", "kiosk", "school");
-    $q = "SELECT * FROM subjects WHERE code='$subjectCode'";
-    $results = $db->query($q)->fetchAll();
-    print_r($results[0]["days"]);
-    $schoolDaysarray = Array();
+  function numberOfSchoolDays($startDate, $endDate){
+    $numOfSchoolDays = 0;
+
     $begin = new DateTime($startDate);
     $end = new DateTime($endDate);
     $interval = DateInterval::createFromDateString("1 day");
     $period = new DatePeriod($begin, $interval, $end);
     foreach($period as $p){
-      // echo $p->format("Y-m-d");
-      // echo "<br>";
+      if(!$this->isWeekend($p->format("Y-m-d")) && !$this->isHoliday($p->format("Y-m-d"))){
+        $numOfSchoolDays += 1;
+      }
     }
 
-    return "";
+    return $numOfSchoolDays;
   }
 
 
   // TODO: efficient way to check attendance.
   function numberOfDaysPresent($studentID){
+    $attendanceInfoArray = Array();
     $present = 0;
     $absent = 0;
-    $results = $this->db->query("SELECT DISTINCT concat(year(`time_recorded`),'-',month(`time_recorded`),'-',day(`time_recorded`)) as date FROM gatekeeper_in WHERE idnumber='".$studentID."'")->fetchAll();
-
+    // $results = $this->db->query("SELECT DISTINCT month(`time_recorded`) as m ,concat(year(`time_recorded`),'-',month(`time_recorded`),'-',day(`time_recorded`)) as date FROM gatekeeper_in WHERE idnumber='".$studentID."'")->fetchAll();
     $begin = new DateTime($this->schoolYear["start"]);
     $end = new DateTime($this->schoolYear["end"]);
+    $begin_unix = strtotime($begin->format("Y-n-j"));
+    $begin_unix = strtotime($end->format("Y-n-j"));
+
+    $now = date("Y-n-j");
+    $now_unix = strtotime($now);
+
+    $numOfschooldaysPassed = 0;
+    $numOfschooldaysLeft = 0;
 
     $interval = DateInterval::createFromDateString('1 day');
     $period = new DatePeriod($begin, $interval, $end);
 
-    foreach ($period as $dt) {
-      echo $dt->format("Y-m-d");
-      echo "<br>";
+    $month = $this->db->query("SELECT DISTINCT month(`time_recorded`) as m  FROM gatekeeper_in WHERE idnumber='".$studentID."'")->fetchAll();
+
+    $datesPresent = $this->db->query("SELECT DISTINCT concat(year(`time_recorded`),'-',month(`time_recorded`),'-',day(`time_recorded`)) as date FROM gatekeeper_in WHERE idnumber='".$studentID."'")->fetchAll();
+
+    foreach ($period as $dt) { // foreach date
+      if(strtotime($dt->format("Y-n-j")) <= $now_unix){
+        if(!$this->isWeekend($dt->format("Y-n-j")))
+          $numOfschooldaysPassed += 1;
+        if(!$this->isWeekend($dt->format("Y-n-j")) && $this->isHoliday($dt->format("Y-n-j")))
+          $numOfschooldaysPassed -= 1;
+        foreach($datesPresent as $dp){
+          // If theres a record
+          if($dt->format("Y-n-j") == $dp["date"]){
+            $present += 1;
+          }
+        }
+      }else{
+        $numOfschooldaysLeft += 1;
+      }
     }
-    return $present;
+    $attendanceInfoArray[$studentID] = Array(
+      "present" => $present,
+      "absent" => ($numOfschooldaysPassed - $present)
+    );
+    // echo "<br>School Days: $numOfschooldaysPassed";
+    // echo "<br>School Days Left: $numOfschooldaysLeft";
+    // echo "<br>Present: $present";
+    // echo "<br>Absent: ".($numOfschooldaysPassed - $present);
+
+    return $attendanceInfoArray;
 
   }
 
@@ -110,12 +185,12 @@ class calendar {
   }
 
 }
-
-$c = new calendar();
-$c->numberOfSchoolDays("2018-08-13", "2019-05-31", "GEN");
-// $c->numberOfDaysPresent("2900876");
-
-$start = new DateTime("2018-08-13");
-$end = new DateTime("2019-05-31");
-// print_r($start->format("Y-m-d"));
-?>
+//
+// $c = new calendar();
+//
+// $count = 0;
+// $start = new DateTime("2018-08-13");
+// $end = new DateTime("2019-05-31");
+// // print("Number of school days: ".$c->numberOfSchoolDays($start->format("Y-m-d"), $end->format("Y-m-d")));
+//
+// print_r($c->numberOfDaysPresent("2900876"));

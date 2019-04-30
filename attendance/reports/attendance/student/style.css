@@ -118,4 +118,8 @@ div#calendar ul.dates li{
 
 div.clear{
     clear:both;
-}    
+}
+
+.calendar {
+  width: 70vw;
+}
