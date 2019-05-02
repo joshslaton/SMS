@@ -29,9 +29,11 @@
     </div>
     <div class='content-wrapper'>
       <?php
-        if(isset($_GET["studentid"])){
-          $cal = new Calendar();
-          $calendar = $cal->build_calendar(3, 2014);
+        $cal = new Calendar();
+        foreach($cal->monthsToIterate("2018-08-13", "2019-05-31") as $my){
+          $month = explode(" ", $my)[0];
+          $year = explode(" ", $my)[1];
+          $calendar = $cal->build_calendar($month, $year);
           print $calendar;
         }
       ?>

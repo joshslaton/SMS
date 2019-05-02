@@ -120,6 +120,6 @@ div.clear{
     clear:both;
 }
 
-.calendar {
-  width: 70vw;
+table.calendar {
+  width: 70vw !important;
 }

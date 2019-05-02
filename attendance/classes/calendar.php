@@ -32,7 +32,7 @@ class calendar {
   	$monthName = $dateComponents['month'];
   	$dayOfWeek = $dateComponents['wday'];
   	$calendar = "<table class='calendar table table-condensed table-bordered'>";
-  	$calendar .= "<caption>$monthName $year</caption>";
+  	$calendar .= "<div>$monthName $year</div>";
   	$calendar .= "<tr>";
   	foreach($daysOfWeek as $day) {
   		$calendar .= "<th class='header'>$day</th>";
@@ -94,10 +94,10 @@ class calendar {
 
       if($mStart > $mEnd){
         for($i=$mStart; $i<=12; $i++){
-          array_push($monthsToIterate, $i);
+          array_push($monthsToIterate, $i." 2018");
         }
         for($j=1; $j<=$mEnd; $j++){
-          array_push($monthsToIterate, $j);
+          array_push($monthsToIterate, $j." 2019");
         }
       }
       return $monthsToIterate;
